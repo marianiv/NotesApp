@@ -4,6 +4,8 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from . import db
 from flask_login import login_user, login_required, logout_user, current_user
 
+
+# set up auth blueprint
 auth = Blueprint('auth', __name__)
 
 
@@ -17,7 +19,7 @@ def login():
         user = User.query.filter_by(email=email).first()
         if user:
             if check_password_hash(user.password, password):
-                flash('Logged in successfully', category='success')
+                flash('Logged in successfully!', category='success')
                 login_user(user, remember=True)
                 return redirect(url_for('views.home'))
             else:
@@ -53,15 +55,15 @@ def sign_up():
             flash('First name must be more than 1 character.', category='error')
         elif password1 != password2:
             flash('Passwords not matching.', category='error')
-        elif len(password1) < 7:
+        elif len(password1) < 6:
             flash('Password must be at least 6 characters.', category='error')
         else:
             # add to the database
             new_user = User(email=email, first_name=first_name, password=generate_password_hash(password1, method="sha256"))
             db.session.add(new_user)
             db.session.commit()
-            login_user(user, remember=True)
-            flash("Account successfully created!")
+            login_user(new_user, remember=True)
+            flash("Account successfully created!", category='success')
             return redirect(url_for('views.home'))
     
     return render_template("sign_up.html", user=current_user)

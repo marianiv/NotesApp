@@ -9,7 +9,7 @@ DB_NAME = "database.db"
 
 #wherever the __init__.py file is, the whole folder becomes a package and we can import anything in this file
 
-#initializing Flask
+#initializing app
 def create_app():
     app = Flask(__name__)
 
@@ -23,10 +23,12 @@ def create_app():
     db.init_app(app)
 
     
-
+    # we are using these blueprints
     from .views import views
     from .auth import auth
 
+
+    # registering blueprints with no prefixes
     app.register_blueprint(views, url_prefix='/')
     app.register_blueprint(auth, url_prefix='/')
 

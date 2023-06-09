@@ -4,25 +4,26 @@ from .models import Note
 from . import db
 import json
 
-# blueprint contains the routes and urls that define it
 
-# defining blueprint
+# set up views blueprint
 views = Blueprint('views', __name__)
 
-@views.route('/', methods=['GET', 'POST']) #defining a decorator with a route
+
+# defining a home route
+@views.route('/', methods=['GET', 'POST']) 
 
 @login_required
 
-def home():  #whenever we type '/' to the url, the following function is being executed
+def home():  
 
     if request.method == 'POST':
-        note = request.form.get('note')
+        note = request.form.get('note') # gets the note from the html
 
         if len(note) < 1:
             flash('Note is too short!', category='error')
         else:
             new_note = Note(data=note, user_id=current_user.id)
-            db.session.add(new_note)
+            db.session.add(new_note) # adiing the note to the database
             db.session.commit()
             flash('Note added.', category='success')
 
@@ -30,7 +31,7 @@ def home():  #whenever we type '/' to the url, the following function is being e
 
 @views.route('/delete-note', methods=['POST'])
 def delete_note():
-    note = json.loads(request.data)
+    note = json.loads(request.data) # expexts a json from index.js
     noteId = note['noteId']
     note = Note.query.get(noteId)
     if note:
